@@ -2,9 +2,12 @@
 import { Shirt, Package, ShoppingBag, ArrowRight } from "lucide-react";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 
 
 const Gallery = () => {
+    const router=useRouter();
   const categories = [
     {
       id: "tshirts",
@@ -74,12 +77,12 @@ const Gallery = () => {
           <div className="p-6">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-2xl font-bold text-red-600">T-Shirts</h3>
-              <ArrowRight className="h-5 w-5 text-primary group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="h-5 w-5 text-primary group-hover:translate-x-1 transition-transform" onClick={()=>router.push("/tshirts")}/>
             </div>
             <p className="text-muted-foreground mb-4">
               Bold graphics and creative typography designs for everyday wear.
             </p>
-            <button className="w-full border border-red-600 text-red-600 rounded-md px-4 py-2 hover:bg-red-600 hover:text-white transition">
+            <button onClick={()=>router.push("/tshirts")} className="w-full border border-red-600 text-red-600 rounded-md px-4 py-2 hover:bg-red-600 hover:text-white transition">
               Browse T-Shirts
             </button>
           </div>
@@ -109,12 +112,12 @@ const Gallery = () => {
           <div className="p-6">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-2xl font-bold text-red-600">Hoodies</h3>
-              <ArrowRight className="h-5 w-5 text-primary group-hover:translate-x-1 transition-transform" />
+              <ArrowRight onClick={() => router.push("/hoodies")} className="h-5 w-5 text-primary group-hover:translate-x-1 transition-transform" />
             </div>
             <p className="text-muted-foreground mb-4">
               Comfortable streetwear with urban and minimalist styles.
             </p>
-            <button className="w-full border border-red-600 text-red-600 rounded-md px-4 py-2 hover:bg-red-600 hover:text-white transition">
+            <button className="w-full border border-red-600 text-red-600 rounded-md px-4 py-2 hover:bg-red-600 hover:text-white transition" onClick={() => router.push("/hoodies")}>
               Browse Hoodies
             </button>
           </div>
@@ -144,12 +147,12 @@ const Gallery = () => {
           <div className="p-6">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-2xl font-bold text-red-600">Bags</h3>
-              <ArrowRight className="h-5 w-5 text-primary group-hover:translate-x-1 transition-transform" />
+              <ArrowRight onClick={() => router.push("/bags")}className="h-5 w-5 text-primary group-hover:translate-x-1 transition-transform" />
             </div>
             <p className="text-muted-foreground mb-4">
               Practical and stylish designs for work and everyday use.
             </p>
-            <button className="w-full border border-red-600 text-red-600 rounded-md px-4 py-2 hover:bg-red-600 hover:text-white transition">
+            <button onClick={() => router.push("/bags")}className="w-full border border-red-600 text-red-600 rounded-md px-4 py-2 hover:bg-red-600 hover:text-white transition">
               Browse Bags
             </button>
           </div>
