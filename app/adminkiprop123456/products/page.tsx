@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Edit, Trash2, Plus, Filter, Search, ArrowUp, ArrowDown } from "lucide-react";
+import { Edit,Image, Trash2, Plus, Filter, Search, ArrowUp, ArrowDown, Lightbulb, Calendar, X, Save, Tag, PlusCircle, DollarSign, Focus } from "lucide-react";
 import CategoryDropdown from "../components/CategoryDropdown";
 const API_BASE = "http://127.0.0.1:5555";
 
@@ -237,71 +237,171 @@ const ProductsManager = () => {
       </div>
 
       {/* Sorting controls */}
-      <div className="flex gap-4 items-center">
-        <span className="font-medium">Sort by:</span>
-        <button
-          onClick={() => requestSort("name")}
-          className={`flex items-center gap-1 px-3 py-1 rounded ${sortConfig.key === "name" ? "bg-gray-100" : ""}`}
-        >
-          Name
-          {sortConfig.key === "name" && (
-            sortConfig.direction === "asc" ? <ArrowUp size={16} /> : <ArrowDown size={16} />
-          )}
-        </button>
-        <button
-          onClick={() => requestSort("price")}
-          className={`flex items-center gap-1 px-3 py-1 rounded ${sortConfig.key === "price" ? "bg-gray-100" : ""}`}
-        >
-          Price
-          {sortConfig.key === "price" && (
-            sortConfig.direction === "asc" ? <ArrowUp size={16} /> : <ArrowDown size={16} />
-          )}
-        </button>
-        <button
-          onClick={() => requestSort("created_at")}
-          className={`flex items-center gap-1 px-3 py-1 rounded ${sortConfig.key === "created_at" ? "bg-gray-100" : ""}`}
-        >
-          Date Added
-          {sortConfig.key === "created_at" && (
-            sortConfig.direction === "asc" ? <ArrowUp size={16} /> : <ArrowDown size={16} />
-          )}
-        </button>
-      </div>
+      <div className="flex flex-wrap gap-3 items-center">
+  <span className="font-semibold text-red-600">Sort by:</span>
+  
+  {/* Name Sort Button */}
+  <button
+    onClick={() => requestSort("name")}
+    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all ${
+      sortConfig.key === "name"
+        ? "bg-gray-100 border-gray-300 text-gray-900 shadow-sm"
+        : "border-transparent text-gray-600 hover:bg-gray-50"
+    }`}
+  >
+    <span>Name</span>
+    {sortConfig.key === "name" && (
+      sortConfig.direction === "asc" 
+        ? <ArrowUp size={16} className="text-gray-700" />
+        : <ArrowDown size={16} className="text-gray-700" />
+    )}
+  </button>
+
+  {/* Price Sort Button */}
+  <button
+    onClick={() => requestSort("price")}
+    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all ${
+      sortConfig.key === "price"
+        ? "bg-gray-100 border-gray-300 text-gray-900 shadow-sm"
+        : "border-transparent text-gray-600 hover:bg-gray-50"
+    }`}
+  >
+    <span>Price</span>
+    {sortConfig.key === "price" && (
+      sortConfig.direction === "asc" 
+        ? <ArrowUp size={16} className="text-gray-700" />
+        : <ArrowDown size={16} className="text-gray-700" />
+    )}
+  </button>
+
+  {/* Date Added Sort Button - Now with both directions */}
+  <div className="flex items-center gap-0.5 rounded-lg border border-gray-300 overflow-hidden">
+    <button
+      onClick={() => requestSort("created_at")}
+      className={`px-3 py-1.5 transition-all ${
+        sortConfig.key === "created_at"
+          ? "bg-gray-100 text-gray-900"
+          : "text-gray-600 hover:bg-gray-50"
+      }`}
+    >
+      <span>Date Added</span>
+    </button>
+    <div className="flex flex-col border-l border-gray-300">
+      <button
+        onClick={() => {
+          if (sortConfig.key !== "created_at" || sortConfig.direction !== "asc") {
+            setSortConfig({ key: "created_at", direction: "asc" });
+          }
+        }}
+        className={`p-1 transition-all ${
+          sortConfig.key === "created_at" && sortConfig.direction === "asc"
+            ? "bg-gray-100 text-gray-900"
+            : "text-gray-400 hover:bg-gray-50 hover:text-gray-600"
+        }`}
+      >
+        <ArrowUp size={14} />
+      </button>
+      <button
+        onClick={() => {
+          if (sortConfig.key !== "created_at" || sortConfig.direction !== "desc") {
+            setSortConfig({ key: "created_at", direction: "desc" });
+          }
+        }}
+        className={`p-1 transition-all ${
+          sortConfig.key === "created_at" && sortConfig.direction === "desc"
+            ? "bg-gray-100 text-gray-900"
+            : "text-gray-400 hover:bg-gray-50 hover:text-gray-600"
+        }`}
+      >
+        <ArrowDown size={14} />
+      </button>
+    </div>
+  </div>
+</div>
 
       {/* Products Grid */}
       {sortedAndFilteredProducts.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {sortedAndFilteredProducts.map((product) => (
-            <div key={`${product.category}-${product.id}`} className="border rounded-lg p-4 shadow-sm bg-white flex flex-col justify-between">
-              <img src={product.image} alt={product.name} className="w-full h-48 object-cover rounded mb-4" />
-              <div>
-                <h3 className="text-lg font-semibold">{product.name}</h3>
-                <p className="text-sm text-gray-500 capitalize">{product.category}</p>
-                <p className="text-sm mt-1">Inspiration: <i>{product.inspiration}</i></p>
-                <p className="text-lg font-bold mt-2">Ksh {product.price.toLocaleString()}</p>
-                {product.created_at && (
-                  <p className="text-xs text-gray-400 mt-1">
-                    Added: {new Date(product.created_at).toLocaleDateString()}
-                  </p>
-                )}
-              </div>
-              <div className="flex justify-between mt-4">
-                <button 
-                  onClick={() => handleEdit(product)} 
-                  className="px-3 py-1 text-sm bg-black text-white rounded hover:bg-gray-800 flex items-center gap-1"
-                >
-                  <Edit className="w-4 h-4" /> Edit
-                </button>
-                <button 
-                  onClick={() => handleDelete(product)} 
-                  className="px-3 py-1 text-sm border rounded hover:bg-gray-100 flex items-center gap-1"
-                >
-                  <Trash2 className="w-4 h-4 text-red-600" /> Delete
-                </button>
-              </div>
-            </div>
-          ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+  {sortedAndFilteredProducts.map((product) => (
+    <div 
+      key={`${product.category}-${product.id}`} 
+      className="group relative bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-100"
+    >
+      {/* Product Image with Overlay */}
+      <div className="relative overflow-hidden h-56">
+        <img 
+          src={product.image} 
+          alt={product.name} 
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        {/* Category Badge */}
+        <span className="absolute top-3 left-3 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-medium text-gray-800 shadow-sm capitalize">
+          {product.category}
+        </span>
+      </div>
+
+      {/* Product Info */}
+      <div className="p-5">
+        <div className="flex justify-between items-start">
+          <h3 className="text-lg font-bold text-gray-900 line-clamp-2">{product.name}</h3>
+          <p className="text-lg font-bold text-red-600 whitespace-nowrap ml-2">
+            Ksh {product.price.toLocaleString()}
+          </p>
         </div>
+
+        {/* Inspiration with icon */}
+        {product.inspiration && (
+          <div className="mt-2 flex items-center text-sm text-gray-600">
+            <Lightbulb className="w-4 h-4 mr-1 text-yellow-500" />
+            <span className="italic line-clamp-1">{product.inspiration}</span>
+          </div>
+        )}
+
+        {/* Date Added with icon */}
+        {product.created_at && (
+          <div className="mt-3 flex items-center text-xs text-gray-400">
+            <Calendar className="w-3 h-3 mr-1" />
+            <span>Added {new Date(product.created_at).toLocaleDateString()}</span>
+          </div>
+        )}
+
+        {/* Action Buttons - Shown on hover */}
+        <div className="mt-4 flex justify-between gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <button
+            onClick={() => handleEdit(product)}
+            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-black  text-white rounded-lg hover:bg-white hover:text-black hover:border border-black transition-colors"
+          >
+            <Edit className="w-4 h-4" />
+            <span className="text-sm">Edit</span>
+          </button>
+          <button
+            onClick={() => handleDelete(product)}
+            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-white text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
+          >
+            <Trash2 className="w-4 h-4" />
+            <span className="text-sm">Delete</span>
+          </button>
+        </div>
+
+        {/* Fallback buttons for mobile touch */}
+        <div className="mt-4 flex justify-between gap-2 group-hover:hidden">
+          <button
+            onClick={() => handleEdit(product)}
+            className="p-2 text-black hover:bg-red-50 rounded-full transition-colors"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => handleDelete(product)}
+            className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
       ) : (
         <div className="text-center py-12">
           <p className="text-gray-500">No products found matching your criteria</p>
@@ -310,82 +410,147 @@ const ProductsManager = () => {
 
       {/* Create / Edit Modal */}
       {isDialogOpen && (
-        <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg w-full max-w-lg space-y-4">
-            <h2 className="text-xl font-bold">{editingProduct ? "Edit" : "Create"} Product</h2>
-            <form onSubmit={handleSubmit} className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                <input
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full border px-3 py-2 rounded"
-                  placeholder="Product name"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Price (Ksh)</label>
-                <input
-                  required
-                  value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                  className="w-full border px-3 py-2 rounded"
-                  placeholder="Price"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-                <input
-                  value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  className="w-full border px-3 py-2 rounded"
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Inspiration</label>
-                <input
-                  value={formData.inspiration}
-                  onChange={(e) => setFormData({ ...formData, inspiration: e.target.value })}
-                  className="w-full border px-3 py-2 rounded"
-                  placeholder="Design inspiration"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                <select
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value as Category })}
-                  className="w-full border px-3 py-2 rounded"
-                >
-                  <option value="bags">Bags</option>
-                  <option value="tshirts">T-Shirts</option>
-                  <option value="hoodies">Hoodies</option>
-                </select>
-              </div>
-              <div className="flex justify-end gap-2 pt-4">
-                <button 
-                  type="button" 
-                  onClick={resetForm} 
-                  className="px-4 py-2 border rounded hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button 
-                  type="submit" 
-                  className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800"
-                >
-                  {editingProduct ? "Update Product" : "Create Product"}
-                </button>
-              </div>
-            </form>
-          </div>
+  <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div 
+      className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Header with icon */}
+      <div className="border-b p-5 bg-gradient-to-r from-gray-50 to-white">
+        <div className="flex items-center gap-3">
+          {editingProduct ? (
+            <Edit className="w-6 h-6 text-red-600" />
+          ) : (
+            <PlusCircle className="w-6 h-6 text-red-600" />
+          )}
+          <h2 className="text-xl font-bold text-gray-800">
+            {editingProduct ? "Edit Product" : "Add New Product"}
+          </h2>
         </div>
-      )}
+      </div>
+
+      <form onSubmit={handleSubmit} className="p-5 space-y-4">
+        {/* Name Field */}
+        <div className="space-y-1">
+          <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+            <Tag className="w-4 h-4 text-red-500" />
+            Product Name
+          </label>
+          <input
+            required
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            className=" text-gray-500 w-full px-4 py-2 border border-red-300 outline-none rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            placeholder="e.g. Leather Tote Bag"
+          />
+        </div>
+
+        {/* Price Field */}
+        <div className="space-y-1">
+          <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+            <DollarSign className="w-4 h-4 text-red-500" />
+            Price (Ksh)
+          </label>
+          <input
+            required
+            value={formData.price}
+            onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+            className=" text-gray-500 w-full px-4 py-2 border border-red-300 outline-none rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            placeholder="0.00"
+            type="number"
+            min="0"
+            step="0.01"
+          />
+        </div>
+
+        {/* Image URL Field */}
+        <div className="space-y-1">
+          <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+            <Image className="w-4 h-4 text-red-500" />
+            Image URL
+          </label>
+          <input
+            value={formData.image}
+            onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+            className="text-gray-500 w-full px-4 py-2 border border-red-300 outline-none rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            placeholder="https://example.com/image.jpg"
+          />
+          {formData.image && (
+            <div className="mt-2 w-20 h-20 border rounded-md overflow-hidden">
+              <img 
+                src={formData.image} 
+                alt="Preview" 
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Inspiration Field */}
+        <div className="space-y-1">
+          <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+            <Lightbulb className="w-4 h-4 text-red-500" />
+            Inspiration
+          </label>
+          <input
+            value={formData.inspiration}
+            onChange={(e) => setFormData({ ...formData, inspiration: e.target.value })}
+            className="text-gray-500 outline-none w-full px-4 py-2 border border-red-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            placeholder="What inspired this design?"
+          />
+        </div>
+
+        {/* Category Field */}
+        <div className="space-y-1">
+          <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+            <Focus className="w-4 h-4 text-red-500" />
+            Category
+          </label>
+          <select
+            value={formData.category}
+            onChange={(e) => setFormData({ ...formData, category: e.target.value as Category })}
+            className="w-full px-4 py-2 border border-red-300 text-gray-500 outline-none rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+          >
+            <option value="bags">Bags</option>
+            <option value="tshirts">T-Shirts</option>
+            <option value="hoodies">Hoodies</option>
+          </select>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex justify-end gap-3 pt-6">
+          <button
+            type="button"
+            onClick={resetForm}
+            className="px-5 py-2.5 flex items-center gap-2 text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <X className="w-5 h-5" />
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-5 py-2.5 flex items-center gap-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          >
+            {editingProduct ? (
+              <>
+                <Save className="w-5 h-5" />
+                Update Product
+              </>
+            ) : (
+              <>
+                <Plus className="w-5 h-5" />
+                Create Product
+              </>
+            )}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
     </div>
   );
 };
