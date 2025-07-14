@@ -27,8 +27,8 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   }, [isAuthenticated, router]);
 
   const navigationItems = [
-    { title: "Dashboard", href: "/adminkiprop123456", icon: LayoutDashboard, exact: true },
-    { title: "Products", href: "/adminkiprop123456/products", icon: Package, badge: "24" },
+    { title: "Dashboard", href: "/adminkiprop123456/dashboard", icon: LayoutDashboard, exact: true },
+    { title: "Products", href: "/adminkiprop123456/products", icon: Package, badge: "100+" },
     { title: "Orders", href: "/adminkiprop123456/orders", icon: ShoppingCart, badge: "12" }
   ];
 
@@ -52,10 +52,10 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
                 : "hover:bg-gray-100 text-gray-800"
             }`}
           >
-            <Icon className="h-5 w-5" />
+            <Icon className="h-5 w-5 text-red-600" />
             <span className="font-medium">{item.title}</span>
             {item.badge && (
-              <span className="ml-auto px-2 py-0.5 text-xs bg-gray-200 text-gray-800 rounded-full">
+              <span className="ml-auto px-2 py-0.5 text-xs bg-red-200 text-gray-800 rounded-full">
                 {item.badge}
               </span>
             )}
@@ -74,7 +74,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
             onClick={() => setIsOpen(!isOpen)}
             className="mr-2 p-2 rounded hover:bg-gray-100"
           >
-            <Menu className="h-5 w-5 text-black" />
+            <Menu className="h-5 w-5 text-red-600" />
           </button>
           <h1 className="text-xl font-semibold text-black">Admin Panel</h1>
         </div>
@@ -82,10 +82,10 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         {/* Mobile Sidebar */}
         {isOpen && (
           <div className="absolute top-14 left-0 w-72 h-[calc(100vh-56px)] bg-white border-r shadow-md z-50 p-6 flex flex-col">
-            <div className="border-b pb-4 mb-4">
+            {/* <div className="border-b pb-4 mb-4">
               <h2 className="text-lg font-semibold">Admin Panel</h2>
               <p className="text-sm text-gray-500">Manage your store</p>
-            </div>
+            </div> */}
 
             <nav className="flex-1">
               <NavItems />

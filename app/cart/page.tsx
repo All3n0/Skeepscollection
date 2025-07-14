@@ -3,12 +3,29 @@
 import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { Trash2, ShoppingBag, ArrowLeft, CreditCard } from 'lucide-react';
+import { Trash2, ShoppingBag, ArrowLeft, CreditCard, Loader2, Instagram, Mail, User, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+
+interface CartItem {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  inspiration?: string;
+  type?: string;
+  size?: string;
+}
 
 const CartPage = () => {
   const router = useRouter();
-  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [showPopup, setShowPopup] = useState(false);
+  const [showNamePrompt, setShowNamePrompt] = useState(false);
+  const [nameInput, setNameInput] = useState("");
+  const [emailInput, setEmailInput] = useState("");
+  const [instaInput, setInstaInput] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [orderMessage, setOrderMessage] = useState("");
 
   useEffect(() => {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -22,7 +39,64 @@ const CartPage = () => {
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
 
-  const total = cartItems.reduce((sum, item) => sum + Number(item.price || 0), 0);
+  const calculateTotal = () => {
+    return cartItems.reduce((total, item) => total + item.price, 0);
+  };
+
+  const handleCheckout = () => {
+    setShowNamePrompt(true);
+  };
+
+  const handleCompleteOrder = async () => {
+    if (!nameInput || !emailInput || !instaInput) {
+      setOrderMessage("Please fill in all fields.");
+      setShowPopup(true);
+      return;
+    }
+
+    setSubmitting(true);
+
+    const orderDetails = {
+      customer_name: nameInput,
+      customer_email: emailInput,
+      instagram_handle: instaInput,
+      items: cartItems.map((item) => ({
+        product_type: item.type || "product",
+        product_name: item.name,
+        product_id: item.id,
+        price: Number(item.price) || 0,
+        size: item.size || null,
+        quantity: 1,
+      })),
+    };
+
+    try {
+      const response = await fetch("http://localhost:5555/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderDetails),
+      });
+      
+      const data = await response.json();
+      
+      setOrderMessage("Order placed successfully!");
+      localStorage.removeItem("cart");
+      setCartItems([]);
+      setShowPopup(true);
+      setShowNamePrompt(false);
+      setNameInput("");
+      setEmailInput("");
+      setInstaInput("");
+    } catch (err) {
+      console.error("Error placing order:", err);
+      setOrderMessage("Something went wrong. Please try again.");
+      setShowPopup(true);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const total = calculateTotal();
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -71,8 +145,9 @@ const CartPage = () => {
                       alt={item.name}
                       className="w-24 h-24 object-cover rounded-md border"
                       onError={(e) => {
-                        e.target.src = '/placeholder.jpg';
-                        e.target.className = 'w-24 h-24 object-cover rounded-md border bg-gray-100';
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/placeholder.jpg';
+                        target.className = 'w-24 h-24 object-cover rounded-md border bg-gray-100';
                       }}
                     />
                     <div>
@@ -107,7 +182,7 @@ const CartPage = () => {
                   </div>
                   <div className="flex justify-between items-center border-b pb-4">
                     <span className="text-gray-600">Shipping</span>
-                    <span className="font-medium text-red-600">Free</span>
+                    <span className="font-medium text-red-600">To be communicated</span>
                   </div>
                   <div className="flex justify-between items-center pt-2">
                     <span className="text-lg font-medium font-semibold text-gray-800">Total</span>
@@ -116,6 +191,7 @@ const CartPage = () => {
                 </div>
 
                 <button
+                  onClick={handleCheckout}
                   className="mt-6 w-full bg-red-600 text-white px-6 py-3 rounded-md hover:bg-red-700 transition flex items-center justify-center"
                 >
                   <CreditCard size={18} className="mr-2" />
@@ -132,6 +208,133 @@ const CartPage = () => {
                   Continue Shopping
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Customer Details Popup */}
+        {showNamePrompt && (
+  <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="bg-white rounded-xl shadow-xl overflow-hidden w-full max-w-md border border-gray-200">
+      <div className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+            <ShoppingBag className="h-5 w-5 text-red-600" />
+            Checkout Details
+          </h3>
+          <button 
+            onClick={() => setShowNamePrompt(false)}
+            className="text-gray-400 hover:text-gray-500 transition-colors"
+            disabled={submitting}
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          <div className="space-y-1">
+            <label className="block text-sm font-semibold text-gray-700 flex items-center gap-1">
+              <User className="h-4 w-4 text-red-500" />
+              Full Name
+            </label>
+            <input
+              type="text"
+              placeholder="John Doe"
+              value={nameInput}
+              onChange={(e) => setNameInput(e.target.value)}
+              className="w-full px-3 py-2 border border-red-500 text-gray-500 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="block text-sm font-semibold text-gray-700 flex items-center gap-1">
+              <Mail className="h-4 w-4 text-red-500" />
+              Email Address
+            </label>
+            <input
+              type="email"
+              placeholder="john@example.com"
+              value={emailInput}
+              onChange={(e) => setEmailInput(e.target.value)}
+className="w-full px-3 py-2 border border-red-500 text-gray-500 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="block text-sm font-semibold text-gray-700 flex items-center gap-1">
+              <Instagram className="h-4 w-4 text-red-500" />
+              Instagram Handle
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <span className="text-red-500">@</span>
+              </div>
+              <input
+                type="text"
+                placeholder="username"
+                value={instaInput}
+                onChange={(e) => setInstaInput(e.target.value)}
+                className="w-full pl-7 px-3 py-2 border border-red-500 text-gray-500 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 flex gap-3">
+          <button
+            onClick={() => setShowNamePrompt(false)}
+            disabled={submitting}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </button>
+          <button
+            onClick={handleCompleteOrder}
+            disabled={submitting}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-red-400 transition"
+          >
+            {submitting ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              <>
+                <CreditCard className="h-4 w-4" />
+                Complete Order
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+
+      <div className="bg-gray-50 px-6 py-4 border-t">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-gray-500">Total</span>
+          <span className="text-lg font-bold text-red-600">Ksh {calculateTotal().toFixed(2)}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+        {/* Order Message Popup */}
+        {showPopup && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full text-center">
+              <p className="text-lg mb-4">{orderMessage}</p>
+              {orderMessage === "Order placed successfully!" && (
+                <p className="text-sm text-gray-600 mt-2">
+                  Please check your spam folder as the confirmation email might be there.
+                </p>
+              )}
+              <button
+                onClick={() => setShowPopup(false)}
+                className="mt-4 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition"
+              >
+                Close
+              </button>
             </div>
           </div>
         )}
