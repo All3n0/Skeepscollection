@@ -1,11 +1,14 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X, ShoppingBag, Phone } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const Navigation = ({ cartItemsCount = 0 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+  const isHome = pathname === "/";
 
   const navItems = [
     { name: "Home", href: "#home" },
@@ -14,6 +17,10 @@ const Navigation = ({ cartItemsCount = 0 }) => {
     { name: "About", href: "#about" },
     { name: "Contact", href: "#contact" },
   ];
+
+  const formatHref = (hashHref) => {
+    return isHome ? hashHref : `/${hashHref}`;
+  };
 
   return (
     <nav className="bg-white sticky top-0 z-50 border-b border-gray-200 shadow-sm">
@@ -30,23 +37,24 @@ const Navigation = ({ cartItemsCount = 0 }) => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
             {navItems.map((item) => (
-              <a
+              <Link
                 key={item.name}
-                href={item.href}
+                href={formatHref(item.href)}
+                scroll={true}
                 className="text-gray-700 hover:text-red-600 transition-colors duration-200 font-medium px-2 py-1 rounded-md hover:bg-gray-50"
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
 
             <div className="flex items-center space-x-4 ml-4">
-              <a
-                href="#contact"
+              <Link
+                href={formatHref("#contact")}
                 className="flex items-center bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition group"
               >
                 <Phone className="h-4 w-4 mr-2 group-hover:animate-pulse" />
                 Get Quote
-              </a>
+              </Link>
 
               <Link
                 href="/cart"
@@ -93,24 +101,24 @@ const Navigation = ({ cartItemsCount = 0 }) => {
           <div className="md:hidden bg-white border-t border-gray-200">
             <div className="px-2 pt-2 pb-4 space-y-2">
               {navItems.map((item) => (
-                <a
+                <Link
                   key={item.name}
-                  href={item.href}
+                  href={formatHref(item.href)}
                   onClick={() => setIsOpen(false)}
                   className="block px-3 py-3 text-gray-700 hover:text-red-600 hover:bg-gray-50 rounded-md font-medium transition-colors"
                 >
                   {item.name}
-                </a>
+                </Link>
               ))}
 
-              <a
-                href="#contact"
+              <Link
+                href={formatHref("#contact")}
                 onClick={() => setIsOpen(false)}
                 className="flex items-center justify-center mt-2 px-3 py-3 bg-red-600 text-white rounded-md font-semibold hover:bg-red-700 transition"
               >
                 <Phone className="h-4 w-4 mr-2" />
                 Get Quote
-              </a>
+              </Link>
             </div>
           </div>
         )}

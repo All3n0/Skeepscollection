@@ -19,8 +19,13 @@ export default function InspirationCard({ item, type }) {
     router.push(`/${type}/${encodeURIComponent(inspiration)}`);
   };
 
-  const formattedPrice =
-    typeof price === 'number' ? price.toFixed(2) : '0.00';
+  const formattedPrice = (() => {
+  if (type === 'bags') return '550';
+  if (type === 'tshirts') return '1000';
+  if (type === 'hoodies') return '2000';
+  return typeof price === 'number' ? price.toFixed(2) : '0.00';
+})();
+
 
   return (
     <div
