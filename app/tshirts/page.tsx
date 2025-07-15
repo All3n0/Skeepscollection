@@ -5,10 +5,15 @@ import { ArrowLeft, Loader2, Search } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import InspirationCard from '../components/InspirationCard';
-
+type TShirt = {
+  id: number;
+  design_name: string;
+  description: string;
+  inspiration: string;
+};
 const TShirtsPage = () => {
-  const [tshirts, setTShirts] = useState([]);
-  const [filteredTShirts, setFilteredTShirts] = useState([]);
+  const [tshirts, setTShirts] = useState<TShirt[]>([]);
+  const [filteredTShirts, setFilteredTShirts] = useState<TShirt[]>([]);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

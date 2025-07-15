@@ -111,7 +111,7 @@ const InspirationPage = () => {
                 key={item.id} 
                 item={item} 
                 addToCart={addToCart} 
-                accentColor="red-600"
+                // accentColor="red-600"
               />
             ))}
           </div>

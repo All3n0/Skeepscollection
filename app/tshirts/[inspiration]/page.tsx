@@ -111,7 +111,7 @@ const TShirtInspirationPage = () => {
                 item={item} 
                 
                 addToCart={addToCart} 
-                accentColor="red-600"
+                // accentColor="red-600"
               />
             ))}
           </div>

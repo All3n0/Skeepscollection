@@ -2,9 +2,26 @@
 import { ShoppingCart, Eye, X } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-
-const Products = () => {
-  const [selectedProduct, setSelectedProduct] = useState(null);
+type Product = {
+  id: number;
+  name: string;
+  description: string;
+  image: string;
+  startingPrice: string;
+  features: string[];
+  fullDescription: string;
+  sizes: string[];
+  colors: string[];
+  productionTime: string;
+  minOrder: string;
+};
+type ProductsProps = {
+  id?: string;
+  addToCart: (product: Product) => void;
+};
+const Products = (props: ProductsProps) => {
+  const { id, addToCart } = props;
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showPopup, setShowPopup] = useState(false);
 
   const products = [
@@ -56,18 +73,18 @@ const Products = () => {
     }
   };
 
-  const handleViewClick = (product) => {
+  const handleViewClick = (product: Product) => {
     setSelectedProduct(product);
     setShowPopup(true);
   };
 
-  const handleOrderClick = (product) => {
+  const handleOrderClick = (product: Product) => {
     setSelectedProduct(product);
     scrollToContact();
   };
 
   return (
-    <section id="products" className="py-20 bg-gray-50">
+    <section id={id} className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center mb-16">
@@ -168,23 +185,26 @@ const Products = () => {
               We specialize in custom orders. Whether it's a unique design, specific material,
               or bulk quantity — we've got you covered.
             </p>
-            <Link href="/contact">
-              <button className="bg-red-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-red-700 transition">
+              <button onClick={() => {
+      const contactSection = document.getElementById('contact');
+      contactSection?.scrollIntoView({ behavior: 'smooth' });
+    }}
+              className="bg-red-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-red-700 transition">
                 Contact Us for Custom Orders
               </button>
-            </Link>
+            
           </div>
         </div>
       </div>
 
       {/* Product Details Popup */}
       {showPopup && selectedProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 backdrop-blur bg-opacity-50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="relative">
               <button 
                 onClick={() => setShowPopup(false)}
-                className="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 rounded-full p-2 z-10"
+                className="absolute top-4 right-4 font-lg text-red-600 hover:text-red-800 rounded-full p-2 z-10"
               >
                 <X className="w-5 h-5" />
               </button>

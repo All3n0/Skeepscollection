@@ -5,32 +5,44 @@ import { ArrowLeft, Loader2, Search } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import InspirationCard from '../components/InspirationCard';
+type Bag = {
+  id: number;
+  design_name: string;
+  description: string;
+  inspiration: string;
+  // optionally add image, price, etc.
+};
 
 const BagsPage = () => {
-    const [bags, setBags] = useState([]);
-    const [filteredBags, setFilteredBags] = useState([]);
+    const [bags, setBags] = useState<Bag[]>([]);
+    const [filteredBags, setFilteredBags] = useState<Bag[]>([]);
     const router = useRouter();
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchBags = async () => {
-            try {
-                const response = await fetch('http://127.0.0.1:5555/bags');
-                if (!response.ok) throw new Error('Failed to fetch bags');
-                const data = await response.json();
-                setBags(data);
-                setFilteredBags(data);
-            } catch (err) {
+useEffect(() => {
+    const fetchBags = async () => {
+        try {
+            const response = await fetch('http://127.0.0.1:5555/bags');
+            if (!response.ok) throw new Error('Failed to fetch bags');
+            const data = await response.json();
+            setBags(data);
+            setFilteredBags(data);
+        } catch (err) {
+            if (err instanceof Error) {
                 setError(err.message);
-            } finally {
-                setLoading(false);
+            } else {
+                setError('An unknown error occurred');
             }
-        };
-        fetchBags();
-    }, []);
+        } finally {
+            setLoading(false);
+        }
+    };
+    fetchBags();
+}, []);
 
-    const handleSearch = (query) => {
+
+    const handleSearch = (query: string) => {
         const filtered = bags.filter(bag => 
             bag.inspiration.toLowerCase().includes(query.toLowerCase()) ||
             bag.design_name?.toLowerCase().includes(query.toLowerCase()) ||
@@ -40,12 +52,13 @@ const BagsPage = () => {
     };
 
     // Group by inspiration but keep all products
-    const inspirationGroups = filteredBags.reduce((acc, bag) => {
-        if (!acc[bag.inspiration]) {
-            acc[bag.inspiration] = bag; // Store just one bag per inspiration
-        }
-        return acc;
-    }, {});
+   const inspirationGroups: { [key: string]: Bag } = filteredBags.reduce((acc, bag) => {
+    if (!acc[bag.inspiration]) {
+        acc[bag.inspiration] = bag; // Store just one bag per inspiration
+    }
+    return acc;
+}, {} as { [key: string]: Bag });
+
 
     if (loading) return (
         <div className="flex items-center justify-center h-screen bg-gray-50">

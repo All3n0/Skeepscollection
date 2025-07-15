@@ -1,4 +1,6 @@
-import { ShoppingBag, Mail, Phone, MapPin, Facebook, Instagram, Twitter } from "lucide-react";
+import { ShoppingBag, Mail, Phone, MapPin, Facebook, Instagram, Twitter, Pin } from "lucide-react";
+import { FaPinterest, FaTiktok } from "react-icons/fa";
+import { PiNyTimesLogo } from "react-icons/pi";
 
 const Footer = () => {
   return (
@@ -15,17 +17,33 @@ const Footer = () => {
               Your trusted partner for premium custom apparel. We bring your creative visions 
               to life with exceptional quality and lightning-fast turnaround times.
             </p>
-            <div className="flex space-x-4 text-white">
-              <a href="#" className=" hover:text-red-600 transition-colors">
-                <Facebook className="h-6 w-6" />
-              </a>
-              <a href="#" className=" hover:text-red-600 transition-colors">
-                <Instagram className="h-6 w-6" />
-              </a>
-              <a href="#" className=" hover:text-red-600 transition-colors">
-                <Twitter className="h-6 w-6" />
-              </a>
-            </div>
+ <div className="flex space-x-4 text-white">
+  <a
+    href="https://www.pinterest.com/skeepscollection/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="hover:text-red-600 transition-colors"
+  >
+    <FaPinterest className="h-6 w-6" />
+  </a>
+  <a
+    href="https://www.tiktok.com/@skeepscollection"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="hover:text-red-600 transition-colors"
+  >
+    <FaTiktok className="h-6 w-6" />
+  </a>
+  <a
+    href="https://www.instagram.com/skeepscollection/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="hover:text-red-600 transition-colors"
+  >
+    <Instagram className="h-6 w-6" />
+  </a>
+</div>
+
           </div>
 
           {/* Quick Links */}

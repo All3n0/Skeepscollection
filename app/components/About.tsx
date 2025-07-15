@@ -1,6 +1,8 @@
 import { CheckCircle, Users, Award, Clock } from "lucide-react";
-
-const About = () => {
+type AboutProps = {
+  id?: string;
+};
+const About = ({ id }: AboutProps = {}) => {
   const features = [
     {
       icon: CheckCircle,
@@ -25,7 +27,7 @@ const About = () => {
   ];
 
   return (
-    <section id="about" className="py-20 bg-white text-black">
+    <section id={id} className="py-20 bg-white text-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Content */}
         <div className="grid lg:grid-cols-2 gap-16 items-center">

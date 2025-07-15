@@ -1,7 +1,10 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Edit,Image, Trash2, Plus, Filter, Search, ArrowUp, ArrowDown, Lightbulb, Calendar, X, Save, Tag, PlusCircle, DollarSign, Focus } from "lucide-react";
+import {
+  Edit, Image, Trash2, Plus, Filter, Search, ArrowUp, ArrowDown,
+  Lightbulb, Calendar, X, Save, Tag, PlusCircle, DollarSign, Focus
+} from "lucide-react";
 import CategoryDropdown from "../components/CategoryDropdown";
 const API_BASE = "http://127.0.0.1:5555";
 
@@ -14,16 +17,16 @@ interface Product {
   price: number;
   image: string;
   inspiration: string;
-  created_at?: string; // Assuming your API returns this
+  created_at?: string;
 }
 
 const ProductsManager = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [filter, setFilter] = useState<"all" | Category>("all");
-  const [sortConfig, setSortConfig] = useState<{
-    key: "name" | "price" | "created_at";
-    direction: "asc" | "desc";
-  }>({ key: "name", direction: "asc" });
+  const [sortConfig, setSortConfig] = useState({
+    key: "name" as "name" | "price" | "created_at",
+    direction: "asc" as "asc" | "desc"
+  });
   const [searchQuery, setSearchQuery] = useState("");
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -35,6 +38,8 @@ const ProductsManager = () => {
     image: "",
     inspiration: ""
   });
+
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null); // <-- New state for delete modal
 
   const fetchAllProducts = async () => {
     try {
@@ -66,22 +71,56 @@ const ProductsManager = () => {
     fetchAllProducts();
   }, []);
 
-  const handleDelete = async (product: Product) => {
-    if (!confirm(`Are you sure you want to delete ${product.name}?`)) return;
-    
+  const confirmDelete = async () => {
+    if (!productToDelete) return;
     try {
-      const response = await fetch(`${API_BASE}/${product.category}/${product.id}`, {
+      const response = await fetch(`${API_BASE}/${productToDelete.category}/${productToDelete.id}`, {
         method: "DELETE"
       });
-      
       if (response.ok) {
         fetchAllProducts();
+        setProductToDelete(null); // close modal
       } else {
         console.error("Delete failed with status:", response.status);
       }
     } catch (err) {
       console.error("Delete failed", err);
     }
+  };
+
+  const requestSort = (key: "name" | "price" | "created_at") => {
+    let direction: "asc" | "desc" = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") direction = "desc";
+    setSortConfig({ key, direction });
+  };
+
+  const getSortedProducts = () => {
+    const sortableProducts = [...products];
+    if (sortConfig.key) {
+      sortableProducts.sort((a, b) => {
+        const aValue = a[sortConfig.key];
+        const bValue = b[sortConfig.key];
+        if (aValue === undefined || bValue === undefined) return 0;
+        if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+        if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+        return 0;
+      });
+    }
+    return sortableProducts;
+  };
+
+  const filteredProducts = () => {
+    let result = getSortedProducts();
+    if (filter !== "all") result = result.filter(p => p.category === filter);
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        p.inspiration.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q)
+      );
+    }
+    return result;
   };
 
   const handleEdit = (product: Product) => {
@@ -106,20 +145,14 @@ const ProductsManager = () => {
     };
 
     try {
-      let response;
-      if (editingProduct) {
-        response = await fetch(`${API_BASE}/${formData.category}/${editingProduct.id}`, {
-          method: "PUT",
+      const response = await fetch(
+        `${API_BASE}/${formData.category}/${editingProduct ? editingProduct.id : ""}`,
+        {
+          method: editingProduct ? "PUT" : "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
-        });
-      } else {
-        response = await fetch(`${API_BASE}/${formData.category}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-      }
+        }
+      );
 
       if (response.ok) {
         resetForm();
@@ -142,51 +175,6 @@ const ProductsManager = () => {
       image: "",
       inspiration: ""
     });
-  };
-
-  const requestSort = (key: "name" | "price" | "created_at") => {
-    let direction: "asc" | "desc" = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
-    }
-    setSortConfig({ key, direction });
-  };
-
-  const getSortedProducts = () => {
-    const sortableProducts = [...products];
-    if (sortConfig.key) {
-      sortableProducts.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
-          return sortConfig.direction === "asc" ? -1 : 1;
-        }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
-          return sortConfig.direction === "asc" ? 1 : -1;
-        }
-        return 0;
-      });
-    }
-    return sortableProducts;
-  };
-
-  const filteredProducts = () => {
-    let result = getSortedProducts();
-    
-    // Apply category filter
-    if (filter !== "all") {
-      result = result.filter(p => p.category === filter);
-    }
-    
-    // Apply search filter
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      result = result.filter(p => 
-        p.name.toLowerCase().includes(query) || 
-        p.inspiration.toLowerCase().includes(query) ||
-        p.category.toLowerCase().includes(query)
-      );
-    }
-    
-    return result;
   };
 
   const sortedAndFilteredProducts = filteredProducts();
@@ -375,7 +363,7 @@ const ProductsManager = () => {
             <span className="text-sm">Edit</span>
           </button>
           <button
-            onClick={() => handleDelete(product)}
+            onClick={() => setProductToDelete(product)}
             className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-white text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
@@ -392,7 +380,7 @@ const ProductsManager = () => {
             <Edit className="w-4 h-4" />
           </button>
           <button
-            onClick={() => handleDelete(product)}
+            onClick={() => setProductToDelete(product)}
             className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
           >
             <Trash2 className="w-4 h-4" />
@@ -550,7 +538,32 @@ const ProductsManager = () => {
       </form>
     </div>
   </div>
-)}
+)}{productToDelete && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg">
+            <h2 className="text-lg font-bold text-gray-800 mb-3">
+              Confirm Deletion
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete <strong>{productToDelete.name}</strong>?
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setProductToDelete(null)}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+              >
+                Yes, Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

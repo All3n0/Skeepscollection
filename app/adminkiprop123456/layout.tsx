@@ -9,8 +9,10 @@ import {
   Package,
   ShoppingCart,
   LogOut,
-  Home
+  Home,
+  MailQuestionMark
 } from "lucide-react";
+import { title } from "process";
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,7 +31,8 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const navigationItems = [
     { title: "Dashboard", href: "/adminkiprop123456/dashboard", icon: LayoutDashboard, exact: true },
     { title: "Products", href: "/adminkiprop123456/products", icon: Package, badge: "100+" },
-    { title: "Orders", href: "/adminkiprop123456/orders", icon: ShoppingCart, badge: "12" }
+    { title: "Orders", href: "/adminkiprop123456/orders", icon: ShoppingCart, badge: "12" },
+    {title: "Custom Orders", href: "/adminkiprop123456/customorders", icon: MailQuestionMark, badge: "5" },
   ];
 
   const isActive = (href: string, exact?: boolean) =>

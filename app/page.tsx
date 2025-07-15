@@ -9,10 +9,24 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Navigation from './components/Navbar';
 import Gallery from './components/Gallery';
-export default function Home() {
-  const [cartItems, setCartItems] = useState([]);
+type Product = {
+  id: number;
+  name: string;
+  description: string;
+  image: string;
+  startingPrice: string;
+  features: string[];
+  fullDescription: string;
+  sizes: string[];
+  colors: string[];
+  productionTime: string;
+  minOrder: string;
+};
 
-  const addToCart = (product) => {
+export default function Home() {
+  const [cartItems, setCartItems] = useState<Product[]>([]);
+
+  const addToCart = (product: Product) => {
     setCartItems([...cartItems, product]);
   };
 

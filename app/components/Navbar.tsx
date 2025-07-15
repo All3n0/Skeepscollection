@@ -18,9 +18,9 @@ const Navigation = ({ cartItemsCount = 0 }) => {
     
   ];
 
-  const formatHref = (hashHref) => {
-    return isHome ? hashHref : `/${hashHref}`;
-  };
+ const formatHref = (hashHref: string) => {
+  return isHome ? hashHref : `/${hashHref}`;
+};
 
   return (
     <nav className="bg-white sticky top-0 z-50 border-b border-gray-200 shadow-sm">

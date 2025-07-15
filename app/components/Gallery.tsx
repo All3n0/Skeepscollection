@@ -4,9 +4,11 @@ import { Shirt, Package, ShoppingBag, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+type GalleryProps = {
+  id?: string;
+};
 
-
-const Gallery = () => {
+const Gallery = ({ id }: GalleryProps = {}) => {
     const router=useRouter();
   const categories = [
     {
@@ -39,7 +41,7 @@ const Gallery = () => {
   ];
 
   return (
-    <section id="gallery" className="py-20 bg-white text-black">
+    <section id={id} className="py-20 bg-white text-black">
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     {/* Header */}
     <div className="text-center mb-16">

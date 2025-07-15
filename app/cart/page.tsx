@@ -321,7 +321,7 @@ className="w-full px-3 py-2 border border-red-500 text-gray-500 rounded-lg focus
 
         {/* Order Message Popup */}
         {showPopup && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="fixed inset-0 backdrop-blur bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg p-6 max-w-md w-full text-center">
               <p className="text-lg mb-4">{orderMessage}</p>
               {orderMessage === "Order placed successfully!" && (
