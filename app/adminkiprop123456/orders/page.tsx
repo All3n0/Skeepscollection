@@ -30,7 +30,7 @@ const OrdersManager = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    fetch("http://localhost:5555/orders")
+    fetch("https://skeepsserver-production.up.railway.app/orders")
       .then((res) => res.json())
       .then((data) => {
         setOrders(data);
@@ -44,7 +44,7 @@ const OrdersManager = () => {
 
   const toggleComplete = (orderId: number, currentStatus: boolean) => {
     const endpoint = currentStatus ? "uncomplete" : "complete";
-    fetch(`http://localhost:5555/orders/${orderId}/${endpoint}`, {
+    fetch(`https://skeepsserver-production.up.railway.app/orders/${orderId}/${endpoint}`, {
       method: "PATCH",
     })
       .then((res) => res.json())
@@ -63,7 +63,7 @@ const OrdersManager = () => {
   const handleDelete = (orderId: number) => {
     if (!window.confirm("Are you sure you want to delete this order?")) return;
 
-    fetch(`http://localhost:5555/orders/${orderId}`, {
+    fetch(`https://skeepsserver-production.up.railway.app/orders/${orderId}`, {
       method: "DELETE",
     })
       .then(() => {

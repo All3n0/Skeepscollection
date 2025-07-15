@@ -21,7 +21,7 @@ const TShirtInspirationPage = () => {
   useEffect(() => {
     if (inspiration) {
       setIsLoading(true);
-      fetch(`http://localhost:5555/tshirts/inspiration/${inspiration}`)
+      fetch(`https://skeepsserver-production.up.railway.app/tshirts/inspiration/${inspiration}`)
         .then((res) => {
           if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
           return res.json();

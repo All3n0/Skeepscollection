@@ -20,7 +20,7 @@ const InspirationPage = () => {
   useEffect(() => {
     if (inspiration) {
       setIsLoading(true);
-      fetch(`http://localhost:5555/bags/inspiration/${inspiration}`)
+      fetch(`https://skeepsserver-production.up.railway.app/bags/inspiration/${inspiration}`)
         .then((res) => {
           if (!res.ok) {
             throw new Error(`Failed to fetch: ${res.status}`);

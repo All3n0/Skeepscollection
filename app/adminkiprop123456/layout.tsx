@@ -100,13 +100,10 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
                 onClick={() => setIsOpen(false)}
                 className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
               >
-                <Home className="h-5 w-5" />
-                <span className="font-medium">Back to Store</span>
+                <Home className="h-5 w-5 text-red-600" />
+                <span className="font-semibold text-gray-800">Back to Store</span>
               </Link>
-              <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 text-left">
-                <LogOut className="h-5 w-5" />
-                Logout
-              </button>
+              
             </div>
           </div>
         )}

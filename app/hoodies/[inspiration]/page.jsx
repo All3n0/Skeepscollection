@@ -19,7 +19,7 @@ const HoodieInspirationPage = () => {
   useEffect(() => {
     if (inspiration) {
       setIsLoading(true);
-      fetch(`http://127.0.0.1:5555/hoodies/inspiration/${inspiration}`)
+      fetch(`https://skeepsserver-production.up.railway.app/hoodies/inspiration/${inspiration}`)
         .then((res) => {
           if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
           return res.json();

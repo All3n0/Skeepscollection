@@ -23,7 +23,7 @@ const Contact = ({ id }: ContactProps = {}) => {
   setLoading(true);
   
   try {
-    const response = await fetch('http://localhost:5555/contact', {
+    const response = await fetch('http://localhohttps://skeepsserver-production.up.railway.app/st:5555/contact', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

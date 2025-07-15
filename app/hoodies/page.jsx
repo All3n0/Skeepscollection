@@ -16,7 +16,7 @@ const HoodiesPage = () => {
   useEffect(() => {
     const fetchHoodies = async () => {
       try {
-        const res = await fetch('http://127.0.0.1:5555/hoodies');
+        const res = await fetch('https://skeepsserver-production.up.railway.app/hoodies');
         if (!res.ok) throw new Error('Failed to fetch hoodies');
         const data = await res.json();
         setHoodies(data);

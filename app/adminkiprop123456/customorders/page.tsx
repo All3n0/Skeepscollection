@@ -31,7 +31,7 @@ const CustomOrdersManager = () => {
 
   const fetchOrders = () => {
     setIsLoading(true);
-    fetch("http://localhost:5555/custom-orders")
+    fetch("https://skeepsserver-production.up.railway.app/custom-orders")
       .then((res) => res.json())
       .then((data) => {
         setOrders(data);
@@ -44,7 +44,7 @@ const CustomOrdersManager = () => {
   };
 
   const fetchStats = () => {
-    fetch("http://localhost:5555/custom-orders/stats")
+    fetch("https://skeepsserver-production.up.railway.app/custom-orders/stats")
       .then((res) => res.json())
       .then((data) => setStats(data))
       .catch(console.error);
@@ -53,7 +53,7 @@ const CustomOrdersManager = () => {
   const handleDelete = (orderId: number) => {
     if (!window.confirm("Are you sure you want to delete this custom order?")) return;
 
-    fetch(`http://localhost:5555/custom-orders/${orderId}`, {
+    fetch(`https://skeepsserver-production.up.railway.app/custom-orders/${orderId}`, {
       method: "DELETE",
     })
       .then(() => {

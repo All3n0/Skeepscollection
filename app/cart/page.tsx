@@ -71,7 +71,7 @@ const CartPage = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5555/orders", {
+      const response = await fetch("https://skeepsserver-production.up.railway.app/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderDetails),

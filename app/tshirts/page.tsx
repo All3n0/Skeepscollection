@@ -21,7 +21,7 @@ const TShirtsPage = () => {
   useEffect(() => {
     const fetchTShirts = async () => {
       try {
-        const res = await fetch('http://127.0.0.1:5555/tshirts');
+        const res = await fetch('https://skeepsserver-production.up.railway.app/tshirts');
         if (!res.ok) throw new Error('Failed to fetch t-shirts');
         const data = await res.json();
         setTShirts(data);

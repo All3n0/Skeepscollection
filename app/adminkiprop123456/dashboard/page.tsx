@@ -31,8 +31,8 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const statsRes = await axios.get("http://127.0.0.1:5555/dashboard/stats");
-        const ordersRes = await axios.get("http://127.0.0.1:5555/dashboard/recent-orders");
+        const statsRes = await axios.get("https://skeepsserver-production.up.railway.app/dashboard/stats");
+        const ordersRes = await axios.get("https://skeepsserver-production.up.railway.app/dashboard/recent-orders");
         setStats(statsRes.data);
         setRecentOrders(ordersRes.data);
       } catch (error) {
