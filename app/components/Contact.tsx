@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import { Mail, Phone, MapPin, Clock, Send } from "lucide-react";
-// import { useToast } from "@/hooks/use-toast"; // keep this if it works
+import { Mail, Phone, Clock, Send } from "lucide-react";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -12,16 +11,40 @@ const Contact = () => {
     project: "",
     message: ""
   });
-//   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast({
-      title: "Message Sent!",
-      description: "We'll get back to you within 24 hours.",
+  const [loading, setLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+  
+  try {
+    const response = await fetch('http://localhost:5555/contact', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
     });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Submission failed');
+    }
+
+    setPopupMessage(data.message || "Message sent successfully! We'll get back to you within 24 hours.");
+    setShowPopup(true);
     setFormData({ name: "", email: "", phone: "", project: "", message: "" });
-  };
+  } catch (error) {
+    setPopupMessage(error instanceof Error ? error.message : "Failed to send message. Try again later.");
+    setShowPopup(true);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({
@@ -41,7 +64,6 @@ const Contact = () => {
       title: "Email",
       details: ["skeepscollection@gmail.com"]
     },
-    
     {
       icon: Clock,
       title: "Hours",
@@ -50,7 +72,7 @@ const Contact = () => {
   ];
 
   return (
-    <section id="contact" className="py-20 bg-white text-black">
+    <section id="contact" className="py-20 bg-white text-black relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
@@ -158,10 +180,13 @@ const Contact = () => {
 
                 <button
                   type="submit"
-                  className="w-full bg-red-600 text-white py-3 rounded-md font-semibold hover:bg-red-700 transition flex items-center justify-center"
+                  disabled={loading}
+                  className={`w-full py-3 rounded-md font-semibold transition flex items-center justify-center ${
+                    loading ? "bg-gray-400 cursor-not-allowed" : "bg-red-600 hover:bg-red-700 text-white"
+                  }`}
                 >
                   <Send className="mr-2 h-5 w-5" />
-                  Send Message & Get Quote
+                  {loading ? "Sending..." : "Send Message & Get Quote"}
                 </button>
               </form>
             </div>
@@ -197,6 +222,21 @@ const Contact = () => {
           </div>
         </div>
       </div>
+
+      {/* Popup */}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-md shadow-xl max-w-md w-full text-center">
+            <p className="text-gray-800 mb-4">{popupMessage}</p>
+            <button
+              onClick={() => setShowPopup(false)}
+              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

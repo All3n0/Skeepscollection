@@ -34,7 +34,7 @@ const Gallery = () => {
       image: 'https://i.postimg.cc/J0dg8GB3/custom-bag-1.png',
       icon: ShoppingBag,
       route: "/bags",
-      count: "8+ Designs"
+      count: "100+ Designs"
     }
   ];
 
@@ -139,7 +139,7 @@ const Gallery = () => {
                   <ShoppingBag className="h-6 w-6" />
                 </div>
                 <div className="bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm">
-                  8+ Designs
+                  100+ Designs
                 </div>
               </div>
             </div>

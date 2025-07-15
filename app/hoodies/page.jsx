@@ -1,13 +1,14 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Search, ArrowLeft } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import InspirationCard from '../components/InspirationCard';
 
 const HoodiesPage = () => {
   const [hoodies, setHoodies] = useState([]);
+  const [filteredHoodies, setFilteredHoodies] = useState([]);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,6 +20,7 @@ const HoodiesPage = () => {
         if (!res.ok) throw new Error('Failed to fetch hoodies');
         const data = await res.json();
         setHoodies(data);
+        setFilteredHoodies(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -29,8 +31,17 @@ const HoodiesPage = () => {
     fetchHoodies();
   }, []);
 
+  const handleSearch = (query) => {
+    const filtered = hoodies.filter(hoodie => 
+      hoodie.inspiration.toLowerCase().includes(query.toLowerCase()) ||
+      hoodie.design_name?.toLowerCase().includes(query.toLowerCase()) ||
+      hoodie.description?.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredHoodies(filtered);
+  };
+
   // Group by inspiration, keeping only one hoodie per inspiration
-  const inspirationGroups = hoodies.reduce((acc, hoodie) => {
+  const inspirationGroups = filteredHoodies.reduce((acc, hoodie) => {
     if (!acc[hoodie.inspiration]) {
       acc[hoodie.inspiration] = hoodie;
     }
@@ -68,6 +79,14 @@ const HoodiesPage = () => {
       <main className="flex-1">
         {/* Hero Section */}
         <div className="bg-gradient-to-r from-red-50 to-gray-100 py-16 px-4 sm:px-6 lg:px-8">
+          <button 
+            onClick={() => router.back()}
+            className="flex items-center text-gray-600 hover:text-red-600 mb-6 transition-colors"
+          >
+            <ArrowLeft className="h-5 w-5 mr-1" />
+            Back to Shop
+          </button>
+
           <div className="max-w-7xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               Discover Our Hoodie Collection
@@ -83,6 +102,21 @@ const HoodiesPage = () => {
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
             Browse By Inspiration
           </h2>
+
+          {/* Search Bar */}
+          <div className="max-w-2xl mx-auto mb-12 px-4">
+            <form onSubmit={(e) => e.preventDefault()} className="relative">
+              <input
+                type="text"
+                placeholder="Search hoodies by inspiration, design, or keyword..."
+                className=" text-gray-700 w-full px-4 py-3 pl-12 rounded-lg border border-red-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                onChange={(e) => handleSearch(e.target.value)}
+              />
+              <div className="absolute left-3 top-3 text-gray-400">
+                <Search className="h-6 w-6 text-red-600" />
+              </div>
+            </form>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {Object.values(inspirationGroups).map((hoodie) => (

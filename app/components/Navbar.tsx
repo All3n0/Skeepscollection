@@ -15,7 +15,7 @@ const Navigation = ({ cartItemsCount = 0 }) => {
     { name: "Products", href: "#products" },
     { name: "Gallery", href: "#gallery" },
     { name: "About", href: "#about" },
-    { name: "Contact", href: "#contact" },
+    
   ];
 
   const formatHref = (hashHref) => {
