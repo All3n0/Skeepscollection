@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import { Menu, X, ShoppingBag, Phone } from "lucide-react";
+import { Menu, X, ShoppingBag, Phone, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -61,7 +61,7 @@ const Navigation = ({ cartItemsCount = 0 }) => {
                 className="relative p-2 text-gray-700 hover:text-red-600 transition-colors"
                 aria-label="Shopping Cart"
               >
-                <ShoppingBag className="h-5 w-5" />
+                <ShoppingCart className="h-5 w-5" />
                 {cartItemsCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                     {cartItemsCount}
@@ -78,7 +78,7 @@ const Navigation = ({ cartItemsCount = 0 }) => {
               className="relative p-2 text-gray-700 hover:text-red-600 transition-colors"
               aria-label="Shopping Cart"
             >
-              <ShoppingBag className="h-5 w-5" />
+              <ShoppingCart className="h-5 w-5" />
               {cartItemsCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                   {cartItemsCount}

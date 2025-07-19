@@ -6,7 +6,7 @@ import {
   Lightbulb, Calendar, X, Save, Tag, PlusCircle, DollarSign, Focus
 } from "lucide-react";
 import CategoryDropdown from "../components/CategoryDropdown";
-const API_BASE = "http://127.0.0.1:5555";
+const API_BASE = "https://skeepsserver-production.up.railway.app";
 
 type Category = "bags" | "tshirts" | "hoodies";
 
