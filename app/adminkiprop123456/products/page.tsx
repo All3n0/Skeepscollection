@@ -146,13 +146,16 @@ const ProductsManager = () => {
 
     try {
       const response = await fetch(
-        `${API_BASE}/${formData.category}/${editingProduct ? editingProduct.id : ""}`,
-        {
-          method: editingProduct ? "PUT" : "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        }
-      );
+  editingProduct
+    ? `${API_BASE}/${formData.category}/${editingProduct.id}`
+    : `${API_BASE}/${formData.category}`, // <-- no trailing slash
+  {
+    method: editingProduct ? "PUT" : "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  }
+);
+
 
       if (response.ok) {
         resetForm();
