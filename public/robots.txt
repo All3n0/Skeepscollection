@@ -1,0 +1,6 @@
+# Allow all URLs to be crawled
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /api/

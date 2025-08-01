@@ -3,7 +3,7 @@ import { ArrowRight, Star } from "lucide-react";
 // import { Button } from "@/components/ui/button";
 // import heroImage from "@/assets/hero-image.jpg";
 
-const Hero = ({ id}) => {
+const Hero = ({ id, onCTAClick }) => {
   return (
     <section id="home" className="relative min-h-screen flex items-center">
       {/* Background Image */}
@@ -41,30 +41,34 @@ const Hero = ({ id}) => {
             Transform your ideas into stunning custom t-shirts, hoodies, and bags. 
             Premium quality, lightning-fast delivery, and designs that make you stand out.
           </p>
+<div className="flex flex-col sm:flex-row gap-4">
+        <button
+          onClick={() => {
+            const contactSection = document.getElementById('contact');
+            contactSection?.scrollIntoView({ behavior: 'smooth' });
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4">
-  <button
-    onClick={() => {
-      const contactSection = document.getElementById('contact');
-      contactSection?.scrollIntoView({ behavior: 'smooth' });
-    }}
-    className="btn bg-red-600 hover:bg-primary/90 text-primary-foreground shadow-hover transform hover:scale-105 transition-all duration-200 p-4 rounded-lg flex items-center justify-center text-lg font-semibold"
-  >
-    Start Designing
-    <ArrowRight className="ml-2 h-5 w-5" />
-  </button>
-  
-  <button
-    onClick={() => {
-      const gallerySection = document.getElementById('gallery');
-      gallerySection?.scrollIntoView({ behavior: 'smooth' });
-    }}
-    className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm p-4 rounded-lg flex items-center justify-center text-lg font-semibold transition-colors duration-200"
-  >
-    View Collection
-  </button>
-</div>
+            // Track Start Designing click
+            if (onCTAClick) onCTAClick('Start Designing');
+          }}
+          className="btn bg-red-600 hover:bg-primary/90 text-primary-foreground shadow-hover transform hover:scale-105 transition-all duration-200 p-4 rounded-lg flex items-center justify-center text-lg font-semibold"
+        >
+          Start Designing
+          <ArrowRight className="ml-2 h-5 w-5" />
+        </button>
+
+        <button
+          onClick={() => {
+            const gallerySection = document.getElementById('gallery');
+            gallerySection?.scrollIntoView({ behavior: 'smooth' });
+
+            // Track View Collection click
+            if (onCTAClick) onCTAClick('View Collection');
+          }}
+          className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm p-4 rounded-lg flex items-center justify-center text-lg font-semibold transition-colors duration-200"
+        >
+          View Collection
+        </button>
+      </div>
 
 
           {/* Features */}
