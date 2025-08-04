@@ -28,7 +28,7 @@ type Product = {
 let gaInitialized = false;
 
 if (typeof window !== 'undefined' && !gaInitialized) {
-  ReactGA.initialize('G-XXXXXXXXXX', { debug: true }); // Replace na  GA ID yako process below remove once read :
+  ReactGA.initialize('G-J580MXQT88', { debug: true }); // Replace na  GA ID yako process below remove once read :
   gaInitialized = true;
 }
 
