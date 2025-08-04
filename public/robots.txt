@@ -1,6 +1,9 @@
-# Allow all URLs to be crawled
+# *
 User-agent: *
 Allow: /
 
-Disallow: /admin/
-Disallow: /api/
+# Host
+Host: https://skeepscollection.vercel.app
+
+# Sitemaps
+Sitemap: https://skeepscollection.vercel.app/sitemap.xml
