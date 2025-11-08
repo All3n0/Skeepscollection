@@ -30,7 +30,7 @@ const Navigation = ({ cartItemsCount = 0 }) => {
           <Link href="/" className="flex items-center space-x-2 group">
             <ShoppingBag className="h-8 w-8 text-red-600 group-hover:rotate-12 transition-transform" />
             <span className="text-2xl font-bold text-gray-900 group-hover:text-red-600 transition-colors">
-              Skeepcollection
+              Skeepscollection
             </span>
           </Link>
 
