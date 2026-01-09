@@ -1,208 +1,154 @@
 'use client';
 
-import { useState, useEffect, useRef } from "react";
-import { Menu, X, ShoppingBag, ShoppingCart, Sparkles } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Head from 'next/head';
+import { useEffect, useState } from 'react';
+import ReactGA from 'react-ga4';
+import Hero from './components/Hero';
+import Products from './components/Products';
+import About from './components/About';
+import Contact from './components/Contact';
+import Footer from './components/Footer';
+import Navigation from './components/Navbar';
+import Gallery from './components/Gallery';
 
-type NavRefs = {
-  [key: string]: HTMLAnchorElement | null;
+type Product = {
+  id: number;
+  name: string;
+  description: string;
+  image: string;
+  startingPrice: string;
+  features: string[];
+  fullDescription: string;
+  sizes: string[];
+  colors: string[];
+  productionTime: string;
+  minOrder: string;
 };
 
-const Navigation = ({ cartItemsCount = 0 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState("");
-  const navRefs = useRef<NavRefs>({});
-  const pathname = usePathname();
-  const isHome = pathname === "/";
+let gaInitialized = false;
 
-  // Gallery comes before Products
-  const navItems = [
-    { name: "Home", href: "#home" },
-    { name: "Gallery", href: "#gallery" },
-    { name: "Products", href: "#products" },
-    { name: "About", href: "#about" },
-  ];
+if (typeof window !== 'undefined' && !gaInitialized) {
+  ReactGA.initialize('G-J580MXQT88'); // Replace na  GA ID yako process below remove once read :
+  gaInitialized = true;
+}
+
+
+  // Step 1: Create a Google Analytics account
+
+  // Go to the Google Analytics website (www.google.com/analytics) and sign in with your Google account.
+  // Click on "Create" and follow the prompts to set up a new Google Analytics account.
+  // Fill in the required information, such as your website's name, URL, and industry category.
+  // Step 2: Get your tracking ID
+
+  // Once you've created your Google Analytics account, navigate to the "Admin" section.
+  // Click on "Create Property" and select "Website".
+  // Fill in the required information, such as your website's URL and name.
+  // Click on "Get Tracking ID" to get your unique tracking ID.
+
+
+
+export default function Home() {
+  const [cartItems, setCartItems] = useState<Product[]>([]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-      
-      // Update active section based on scroll position
-      if (isHome) {
-        const sections = navItems.map(item => item.href.substring(1));
-        let currentSection = "";
-        
-        for (const section of sections) {
-          const element = document.getElementById(section);
-          if (element) {
-            const rect = element.getBoundingClientRect();
-            if (rect.top <= 100 && rect.bottom >= 100) {
-              currentSection = `#${section}`;
-              break;
-            }
-          }
-        }
-        
-        if (currentSection) {
-          setActiveSection(currentSection);
-        }
-      }
-    };
+    if (typeof window !== 'undefined') {
+      ReactGA.send({ hitType: 'pageview', page: window.location.pathname });
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isHome]);
+    }
+  }, []);
 
-  const formatHref = (hashHref: string) => {
-    return isHome ? hashHref : `/${hashHref}`;
+  const addToCart = (product: Product) => {
+    setCartItems((prevItems) => [...prevItems, product]);
+    ReactGA.event({
+      category: 'Cart',
+      action: 'Add to Cart',
+      label: product.name,
+      value: 1,
+    });
   };
 
-  const handleNavClick = (href: string) => {
-    setActiveSection(href);
-    setIsOpen(false);
+
+  const handleHeroCTA = () => {
+    ReactGA.event({
+      category: 'Hero',
+      action: 'Click Hero CTA Button',
+      label: 'Shop Now',
+    });
+    const productsSection = document.getElementById('products');
+    if (productsSection) {
+      productsSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
-  // Determine if we should use dark text (for white backgrounds) or light text
-  const shouldUseDarkText = !isHome || isScrolled || isOpen;
+  const handleContactSubmit = () => {
+    ReactGA.event({
+      category: 'Contact',
+      action: 'Submitted Contact Form',
+    });
+  };
 
   return (
-    <nav 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled || isOpen 
-          ? 'bg-white/95 backdrop-blur-md border-b border-gray-200/50 shadow-lg' 
-          : 'bg-transparent'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link 
-            href="/" 
-            className="flex items-center space-x-2 group relative z-10"
-            onClick={() => handleNavClick("#home")}
-          >
-            <div className="relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-orange-500 rounded-full blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
-              <ShoppingBag className="h-8 w-8 text-red-600 group-hover:text-orange-600 transition-colors relative" />
-            </div>
-            <span className={`text-2xl font-bold transition-colors ${
-              shouldUseDarkText ? 'text-gray-900' : 'text-white'
-            } group-hover:text-red-600`}>
-              SkeepsCollection
-            </span>
-            <Sparkles className="h-3 w-3 text-yellow-400 animate-pulse absolute -top-1 -right-2" />
-          </Link>
+    <>
+      <Head>
+        <title>Skeepscollection - Premium Custom Apparel</title>
+        <meta name="description" content="Your trusted partner for premium custom apparel" />
+        <meta name="keywords" content="custom apparel, premium clothing, fashion" />
+        <meta name="author" content="Your Name" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                href={formatHref(item.href)}
-                ref={(el) => {
-                  navRefs.current[item.href] = el;
-                }}
-                onClick={() => handleNavClick(item.href)}
-                scroll={true}
-                className={`relative px-3 py-2 font-medium transition-all duration-200 ${
-                  shouldUseDarkText ? 'text-gray-700' : 'text-white/90'
-                } hover:text-red-600 ${
-                  activeSection === item.href 
-                    ? 'text-red-600 font-semibold' 
-                    : ''
-                }`}
-              >
-                {item.name}
-                {activeSection === item.href && (
-                  <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-red-600 to-orange-500 rounded-full"></div>
-                )}
-              </Link>
-            ))}
+        {/* Open Graph */}
+        <meta property="og:title" content="CustomWear - Premium Custom Apparel" />
+        <meta property="og:description" content="Your trusted partner for premium custom apparel" />
+        <meta property="og:image" content="https://example.com/image.jpg" />
+        <meta property="og:url" content="https://example.com" />
+        <meta property="og:type" content="website" />
 
-            <Link
-              href="/cart"
-              className={`relative p-2.5 rounded-full transition-all duration-300 ${
-                shouldUseDarkText 
-                  ? 'bg-gray-100 hover:bg-gray-200 text-gray-700' 
-                  : 'bg-white/10 hover:bg-white/20 text-white'
-              } hover:text-red-600 shadow-sm hover:shadow-md ml-4`}
-              aria-label="Shopping Cart"
-            >
-              <ShoppingCart className="h-5 w-5" />
-              {cartItemsCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-red-600 to-orange-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                  {cartItemsCount}
-                </span>
-              )}
-            </Link>
-          </div>
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="CustomWear - Premium Custom Apparel" />
+        <meta name="twitter:description" content="Your trusted partner for premium custom apparel" />
+        <meta name="twitter:image" content="https://example.com/image.jpg" />
 
-          {/* Mobile Menu button */}
-          <div className="md:hidden flex items-center space-x-3">
-            <Link
-              href="/cart"
-              className={`relative p-2 rounded-full transition-all duration-300 ${
-                shouldUseDarkText 
-                  ? 'bg-gray-100 hover:bg-gray-200 text-gray-700' 
-                  : 'bg-white/10 hover:bg-white/20 text-white'
-              } hover:text-red-600`}
-              aria-label="Shopping Cart"
-            >
-              <ShoppingCart className="h-5 w-5" />
-              {cartItemsCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-red-600 to-orange-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                  {cartItemsCount}
-                </span>
-              )}
-            </Link>
+        {/* JSON-LD Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "LocalBusiness",
+              "name": "CustomWear",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "123 Main St",
+                "addressLocality": "Anytown",
+                "addressRegion": "CA",
+                "postalCode": "12345",
+                "addressCountry": "USA"
+              },
+              "telephone": "+1 555 555 5555",
+              "email": "info@example.com"
+            }),
+          }}
+        />
 
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className={`p-2 rounded-full transition-all duration-300 ${
-                shouldUseDarkText 
-                  ? 'bg-gray-100 hover:bg-gray-200 text-gray-700' 
-                  : 'bg-white/10 hover:bg-white/20 text-white'
-              } hover:text-red-600`}
-              aria-label={isOpen ? "Close menu" : "Open menu"}
-            >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
-          </div>
-        </div>
+        {/* // For SEO's steps nikama hapo chini   */}
+        {/* Go to the Google Search Console website and sign in with your Google account.
+Click on "Add a property" and enter your website's URL.
+Verify your website using one of the available methods (e.g., HTML tag, DNS record, etc.).
+Submit your sitemap.xml file to Google Search Console.
+Wait for a few minutes for Google to process your submission.
+Now, you can start optimizing your website for search engines. */}
 
-        {/* Mobile Navigation */}
-        {isOpen && (
-          <div className={`md:hidden mt-2 rounded-xl shadow-2xl overflow-hidden ${
-            isScrolled ? 'bg-white' : 'bg-white/95 backdrop-blur-md'
-          }`}>
-            <div className="px-2 pt-2 pb-4 space-y-1">
-              {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  href={formatHref(item.href)}
-                  onClick={() => handleNavClick(item.href)}
-                  className={`flex items-center px-4 py-3 rounded-lg transition-all duration-200 ${
-                    activeSection === item.href
-                      ? 'bg-gradient-to-r from-red-50 to-orange-50 text-red-600 font-semibold border-l-4 border-red-500'
-                      : 'text-gray-700 hover:text-red-600 hover:bg-gray-50'
-                  }`}
-                >
-                  {activeSection === item.href && (
-                    <div className="w-1.5 h-1.5 bg-red-500 rounded-full mr-3"></div>
-                  )}
-                  <span className={activeSection === item.href ? 'ml-2' : ''}>
-                    {item.name}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </nav>
+
+      </Head>
+
+      <Navigation cartItemsCount={cartItems.length} />
+      <Hero id="home" onCTAClick={handleHeroCTA} />
+      <Gallery id="gallery" />
+      <Products id="products" addToCart={addToCart} />
+      <About id="about" />
+      <Contact id="contact" onSubmitForm={handleContactSubmit} />
+      <Footer />
+    </>
   );
-};
-
-export default Navigation;
+}

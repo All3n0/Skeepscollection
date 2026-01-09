@@ -79,21 +79,49 @@ const Navigation = ({ cartItemsCount = 0 }) => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link 
-            href="/" 
-            className="flex items-center space-x-2 group relative z-10"
-            onClick={() => handleNavClick("#home")}
-          >
-            <div className="relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-orange-500 rounded-full blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
-              <ShoppingBag className="h-8 w-8 text-red-600 group-hover:text-orange-600 transition-colors relative" />
-            </div>
-            <span className={`text-2xl font-bold transition-colors ${
-              shouldUseDarkText ? 'text-gray-900' : 'text-white'
-            } group-hover:text-red-600`}>
-              SkeepsCollection
-            </span>
-            <Sparkles className="h-3 w-3 text-yellow-400 animate-pulse absolute -top-1 -right-2" />
-          </Link>
+  href="/" 
+  className="flex items-center space-x-3 group relative z-10"
+  onClick={() => handleNavClick("#home")}
+>
+  <div className="relative flex items-center justify-center">
+    {/* Glow effect behind logo */}
+    <div className="absolute -inset-2 bg-gradient-to-r from-red-500 to-orange-500 rounded-full blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
+    
+    {/* Your logo from public folder */}
+    <div className="relative h-10 w-10 flex items-center justify-center">
+      <img 
+        src="/logo.svg" 
+        alt="SkeepsCollection Logo" 
+        className="h-8 w-8 object-contain filter group-hover:brightness-110 transition-all duration-300"
+        onError={(e) => {
+          // Fallback if logo.svg doesn't exist
+          console.warn("Logo not found at /logo.svg, using fallback icon");
+          e.currentTarget.style.display = 'none';
+          // Create a fallback icon
+          const fallback = document.createElement('div');
+          fallback.className = 'h-8 w-8 bg-gradient-to-r from-red-600 to-orange-500 rounded-lg flex items-center justify-center';
+          fallback.innerHTML = '<span class="text-white font-bold text-xs">SC</span>';
+          e.currentTarget.parentElement?.appendChild(fallback);
+        }}
+      />
+    </div>
+  </div>
+  
+  <div className="flex flex-col">
+    <span className={`text-2xl font-bold transition-colors leading-tight ${
+      shouldUseDarkText ? 'text-gray-900' : 'text-white'
+    } group-hover:text-red-600`}>
+      SkeepsCollection
+    </span>
+    <span className={`text-xs font-medium transition-colors ${
+      shouldUseDarkText ? 'text-gray-600' : 'text-white/80'
+    }`}>
+      Custom Apparel
+    </span>
+  </div>
+  
+  <Sparkles className="h-3 w-3 text-yellow-400 animate-pulse absolute -top-1 -right-2" />
+</Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
