@@ -5,11 +5,15 @@ import { Menu, X, ShoppingBag, ShoppingCart, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+type NavRefs = {
+  [key: string]: HTMLAnchorElement | null;
+};
+
 const Navigation = ({ cartItemsCount = 0 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("");
-  const navRefs = useRef({});
+  const navRefs = useRef<NavRefs>({});
   const pathname = usePathname();
   const isHome = pathname === "/";
 
@@ -55,10 +59,13 @@ const Navigation = ({ cartItemsCount = 0 }) => {
     return isHome ? hashHref : `/${hashHref}`;
   };
 
-  const handleNavClick = (href) => {
+  const handleNavClick = (href: string) => {
     setActiveSection(href);
     setIsOpen(false);
   };
+
+  // Determine if we should use dark text (for white backgrounds) or light text
+  const shouldUseDarkText = !isHome || isScrolled || isOpen;
 
   return (
     <nav 
@@ -81,7 +88,7 @@ const Navigation = ({ cartItemsCount = 0 }) => {
               <ShoppingBag className="h-8 w-8 text-red-600 group-hover:text-orange-600 transition-colors relative" />
             </div>
             <span className={`text-2xl font-bold transition-colors ${
-              isScrolled || isOpen ? 'text-gray-900' : 'text-white'
+              shouldUseDarkText ? 'text-gray-900' : 'text-white'
             } group-hover:text-red-600`}>
               SkeepsCollection
             </span>
@@ -94,11 +101,13 @@ const Navigation = ({ cartItemsCount = 0 }) => {
               <Link
                 key={item.name}
                 href={formatHref(item.href)}
-                ref={(el) => navRefs.current[item.href] = el}
+                ref={(el) => {
+                  navRefs.current[item.href] = el;
+                }}
                 onClick={() => handleNavClick(item.href)}
                 scroll={true}
                 className={`relative px-3 py-2 font-medium transition-all duration-200 ${
-                  isScrolled || isOpen ? 'text-gray-700' : 'text-white/90'
+                  shouldUseDarkText ? 'text-gray-700' : 'text-white/90'
                 } hover:text-red-600 ${
                   activeSection === item.href 
                     ? 'text-red-600 font-semibold' 
@@ -115,7 +124,7 @@ const Navigation = ({ cartItemsCount = 0 }) => {
             <Link
               href="/cart"
               className={`relative p-2.5 rounded-full transition-all duration-300 ${
-                isScrolled || isOpen 
+                shouldUseDarkText 
                   ? 'bg-gray-100 hover:bg-gray-200 text-gray-700' 
                   : 'bg-white/10 hover:bg-white/20 text-white'
               } hover:text-red-600 shadow-sm hover:shadow-md ml-4`}
@@ -135,7 +144,7 @@ const Navigation = ({ cartItemsCount = 0 }) => {
             <Link
               href="/cart"
               className={`relative p-2 rounded-full transition-all duration-300 ${
-                isScrolled || isOpen 
+                shouldUseDarkText 
                   ? 'bg-gray-100 hover:bg-gray-200 text-gray-700' 
                   : 'bg-white/10 hover:bg-white/20 text-white'
               } hover:text-red-600`}
@@ -152,7 +161,7 @@ const Navigation = ({ cartItemsCount = 0 }) => {
             <button
               onClick={() => setIsOpen(!isOpen)}
               className={`p-2 rounded-full transition-all duration-300 ${
-                isScrolled || isOpen 
+                shouldUseDarkText 
                   ? 'bg-gray-100 hover:bg-gray-200 text-gray-700' 
                   : 'bg-white/10 hover:bg-white/20 text-white'
               } hover:text-red-600`}
